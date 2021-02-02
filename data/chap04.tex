@@ -1,0 +1,220 @@
+% !TeX root = ../thuthesis-example.tex
+
+\chapter{实验分析与方法应用}
+
+\section{引言}
+\label{exp.intro}
+
+本文提出了一种专门适用于细粒度领域适应问题的领域适应方法——渐进对抗网络。
+为客观可靠评价本文所提出的渐进对抗网络的有效性，需要对算法进行实现，并开展对比实验和分析实验。
+由于公开数据集缺乏，本文自行搜集数据、构建了两个细粒度领域适应数据集。
+另外，为降低用户使用门槛，本文将算法集成到了领域适应学习系统中，并实现了在实际任务中的应用。
+
+本节中将介绍渐进对抗网络实现方案、所选用的对比算法、评价算法性能所采用的指标、以及分析实验的设定。
+
+
+% % \textbf{本章内容安排。}本章主要内容是实验分析与方法应用，共含有7节。除第\ref{exp.intro}节引言以外，其余6节的内容安排如下：
+% % \begin{itemize}
+% % \item 第\ref{exp.setting}节是实验设置，由4个小节构成。
+% % 其一，介绍本文实现渐进对抗网络所选用的深度学习框架；
+% % 其二，介绍本文实验运行的环境；
+% % 其三，介绍模型训练中的各项设定；
+% % 最后，介绍本文评价模型性能优劣所采用的评价指标。
+% % \item 第\ref{exp.dataset}节是数据集构建，由2个小节构成。分别介绍，从采集清洗数据开始，构建两个专门的细粒度领域适应数据集Birds-31和CUB-Paintings的过程。
+% % \item 第\ref{exp.result}节是对比实验，在本章构建的数据集上，将渐进对抗网络与最新的领域适应方法和图像识别方法进行对比，并对实验现象背后的原因进行分析。
+% % \item 第\ref{exp.analyse}节是分析实验，设计了若干分析实验，对渐进对抗网络各个部分的设计动机，以及渐进对抗网络所提取特征的迁移性能和判别性能进行分析。
+% % \item 第\ref{exp.application}节是应用案例，对将渐进对抗网络与大数据系统软件国家工程实验室领域适应学习系统Xlearn-DA的集成过程进行介绍，对渐进对抗网络在监控视频车辆品牌型号识别任务上的应用进行介绍。
+% % \item 第\ref{exp.last}节是本章小结，尝试对本章中包含的各项工作加以总结概括。
+% % \end{itemize}
+
+
+
+
+% \section{实验设置}
+% \label{exp.setting}
+
+\subsection{深度学习框架}
+近年来，随着深度学习的蓬勃发展，学术界和工业界对深度学习研究的投入不断扩大，催生了许多深度学习框架，比如Caffe\cite{jia2014caffe}、Tensorflow\cite{abadi2016tensorflow}、MXNet\cite{chen2015mxnet}和Pytorch\cite{paszke2019pytorch}。
+这些深度学习框架各具特点、各擅胜场。
+
+但是，目前，在学术界，Pytorch被越来越多的研究人员采用，已经有逐渐成为主流的趋势。
+为便于模型实现、利于同行间交流，本文采用深度学习框架Pytorch来实现本文提出的渐进对抗网络。
+详细的网络设计见于第章。
+
+\subsection{实验环境}
+本文实验在装备图形处理器（Graphics Processing Unit，GPU）的深度学习服务器上进行。
+该服务器配备有8块型号为NVIDIA TITAN RTX的图形处理器，具体配置参见表。
+该型号的图形处理器采用Turing架构，具有24GB显存。
+较大的显存给模型的训练带来极大的便利。因为在渐进对抗网络中，辅助的粗粒度特征提取器和细粒度特征提取器并不共享参数。所以，在训练阶段，渐进对抗网络所需显存大小大约为一般卷积神经网络的两倍。
+当然，深度学习框架支持将单一模型分配到多块图形处理器上进行训练，只是可能造成训练速度的下降。
+
+其实，近年来深度学习的快速发展离不开计算机硬件性能的不断提升，尤其是图形处理器性能的不断提升。
+相较于擅长处理涉及复杂计算步骤、涉及复杂数据依赖的计算任务的中央处理器（Central Processing Unit，CPU），众核架构的图形处理器更适合处理密集计算、并行计算。
+在深度网络训练这一特别任务上，图形处理器表现远远优于中央处理器，此二者的性能差异可能高达数十倍。
+性能屡创新高的图形处理器，使得利用海量数据训练深达上千层的深度神经网络成为可能。
+此外，NVIDIA公司数十年来对于底层库通用并行计算架构（Compute Unified Device Architecture，CUDA）和深度神经网络图形处理器加速器（NVIDIA CUDA Deep Neural Network library，NVIDIA cuDNN）的不断优化，也构成了深度学习领域研究不断前进的基础。
+
+% % 当然，近年来，工业界不断有新的力量被投入参与深度学习硬件的设计开发，比如谷歌公司（Google）研发的机器学习定制芯片——张量处理器（Tensor Processing Unit，TPU）。
+% % 这些持续不断的投入极大的促进了深度学习的繁荣。
+
+
+% \newcolumntype{Y}{>{\centering\arraybackslash}X} 
+% \begin{table}[htb]
+%   \centering
+%   \caption[模板文件]{服务器配置}
+%   \label{tab:gpu}
+%     \begin{tabular}{\linewidth}{lc}
+%       \toprule
+%       {\heiti 项目} & {\heiti 配置信息} \\\midrule[1pt]
+%       操作系统 & Ubuntu 18.04.3 LTS \\
+%       中央处理器 & Intel(R) Xeon(R) Gold 6130 CPU @ 2.10GHz \\
+%       中央处理器核数 & 64 \\
+%       内存    & 512GB \\
+%       图形处理器    & NVIDIA TITAN RTX \\
+%       显存   & 24GB \\
+%       Pytorch版本   & 0.4.1 \\
+%       CUDA版本   & 10.2 \\
+%       \bottomrule
+%     \end{tabular}
+% \end{table}
+
+\begin{table}
+  \centering
+  \caption{服务器配置}
+  \begin{tabular}{lc}
+    \toprule
+    项目  & 配置信息       \\
+    \midrule
+    操作系统 & Ubuntu 18.04.3 LTS \\
+    中央处理器 & Intel(R) Xeon(R) Gold 6130 CPU @ 2.10GHz \\
+    中央处理器核数 & 64 \\
+    内存    & 512GB \\
+    图形处理器    & NVIDIA TITAN RTX \\
+    显存   & 24GB \\
+    PyTorch版本   & 0.4.1 \\
+    CUDA版本   & 10.2 \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:gpu}
+\end{table}
+
+
+% % \subsection{模型训练}
+% % 本文使用深度学习框架PyTorch\cite{paszke2019pytorch}实现所提出的渐进对抗网络。
+% % 粗粒度特征提取器$\rm G$和细粒度特征提取器$\rm F$是移除最后一层分类器层后的ResNet-50\cite{he2016deep}网络。也就是说，本文采用的基干网络（Backbone）是ResNet-50。
+% % ResNet-50网络将首先在ImageNet\cite{russakovsky2015imagenet}上进行预训练，之后，在训练过程中，在我们的数据集上进行微调（Fine-tune）。
+% % 而粗粒度类别预测器${\rm C}^k |_{k=1}^K$、细粒度类别预测器$\rm Y$和领域判别器$\rm D$是随机初始化参数后进行训练的。
+
+% % 本文采用小批量随机梯度下降方法（Mini-batch Stochastic Gradient Desent，Mini-batch SGD），在图形处理器NVIDIA TITAN RTX上，对网络进行训练。动量（Momentum）设置为0.9，批量大小（Batch Size）设置为36。
+% % 在网络训练过程中，参数随机初始化后进行训练的网络的学习率被设置为预训练-微调部分网络的学习率的10倍。
+% % 分类损失函数和对抗损失函数的权重$\lambda$采用变化策略$\lambda=\frac{1-exp⁡(-10p)}{1+exp(-10p)}$，这是被对抗领域适应方法最广泛采用的。
+% % 本文并没有针对各个迁移学习任务调整超参数，在所有的迁移学习任务上，这些参数都是保持一致的。
+
+
+% % \subsection{评价指标}
+% % 本文所研究的问题——细粒度领域适应，是无监督的。
+% % 这意味着，在训练过程中，目标领域样本的类别信息是不可见的。
+% % 与一般的无监督领域适应问题一致，本文采用模型在目标域上的样本分类准确率作为评价模型性能的主要指标。
+
+% % 具体来说，目标领域样本分类准确率通过这样的方法来计算。
+% % 在训练过程中，我们将被给定一个拥有$n_{\mathcal{S}}$个样本的源领域$\mathcal{S} = \{({x},{y}_f,{y}_c^k|_{k=1}^K)\}$ ，和一个拥有$n_{\mathcal{T}}$个样本的目标领域${{\mathcal{T}}} = \{({x}, \textrm{?}, \textrm{?} )\}$。
+% % 在预测过程中，我们将被给定$n_{\mathcal{T}}$个带有标签的目标领域样本对$({x},{y}_f)$，我们将利用已经训练好的细粒度特征提取器$\rm F$和类别预测器$\rm Y$对目标领域$\mathcal{T}$上的这$n_{\mathcal{T}}$个样本的细粒度类别进行预测，$\hat{y}_f={\rm Y}\left({\rm F}\left(x\right)\right)$。
+% % % 在评价模型性能的时候，我们将获得目标域$\mathcal{T}$上的样本的标记信息${y_f}$。
+% % 最后，统计所有样本$x$的预测标签$\hat{y}_f$和真实标签$y_f$是否一致，计算模型预测的细粒度类别准确率，评价模型的优劣：
+% % \begin{equation}
+% % % acc = \frac{ \sum\limits_{{x} \in {\mathcal{S}}}  \mathbb{I}\left(  {\rm Y}\left({\rm F}\left(x\right)\right)  = y_f \right)}{n_{\mathcal{T}}},
+% % acc = { \sum\limits_{{x} \in {\mathcal{T}}}  \mathbb{I}\left(  {\rm Y}\left({\rm F}\left(x\right)\right)  , y_f \right)}/{n_{\mathcal{T}}},
+% % \end{equation}
+% % 其中，$ \mathbb{I}$是指示函数，一致则取1，不一致则取0：
+% % \begin{equation}
+% %   \mathbb{I}\left(  {\rm Y}\left({\rm F}\left(x\right)\right), y_f \right) = 
+% %   \begin{cases}
+% %     1, \quad {\rm Y}\left({\rm F}\left(x\right)\right)  = y_f; \\[0.1cm]
+% %     0, \quad  {\rm Y}\left({\rm F}\left(x\right)\right) \neq y_f.
+% %   \end{cases}
+% % \end{equation}
+
+
+% % \section{数据集构建}
+% % \label{exp.dataset}
+% % 细粒度领域适应是领域适应问题的一个细分研究方向，专门数据集缺乏。近年来，无论是细粒度视觉识别还是领域适应，均吸引了越来越多的关注。随着研究热度的提升，支持细粒度视觉识别和领域适应这两个问题的研究的基础设置愈加完善。最直接的表现就是，用于评价细粒度视觉识别算法和领域适应算法的数据集种类不断丰富、数量不断扩大。新的细粒度视觉识别数据集不断涌现，覆盖的物体种类范围越来越广。鸟\cite{welinder2010caltech,wah2011caltech,NABirds}，狗\cite{standforddog,liu2012dog}，花\cite{nilsback2006flower,angelova2013flower}，飞机\cite{vedaldi2014air,maji2013air}，汽车\cite{stark2011car,krause20133dcar,lin2014jointlycar,yang2015largecar}和食物 \cite{bossard2014food}都有专门的数据集。但是，专门为细粒度领域适应问题搜集建立的数据集尚属极少数。缺乏专门用于细粒度领域适应问题的公开数据集严重制约了对这一极具挑战性、极具学术研究价值的问题的深入研究。
+
+
+% % 于是，为了能够对本文所提出的专门用于细粒度场景的领域适应方法——渐进对抗网络进行客观的、充分的评价，为了能够尽己所能推动细粒度领域适应问题的研究，本文尝试搜集和构建了两个专门用于细粒度领域适应的数据集：Birds-31和CUB-Paintings。
+% % 数据集Birds-31基于三个被广泛使用的细粒度视觉识别数据集构建。三个数据集天然构成了迁移学习的三个领域。
+% % 但是，数据集Birds-31领域间差异过小，不能对领域适应方法进行充分的检验。
+% % 所以，本文从互联网上爬取了大量图像数据并进行了人工筛选，构建了数据集CUB-Paintings。
+% % 本文所构建的两个数据集的概况（所含领域、各个领域所含样本数量）见于下表\ref{table.imagenum}中。
+% % \begin{table}[htbp]
+% % \addtolength{\tabcolsep}{15pt}
+% % \caption[模板文件]{数据集概况}
+% % \vspace{-15pt}
+% % \begin{center}
+% % %  \begin{minipage}[t]{0.8\linewidth} % 如果想在表格中使用脚注，minipage是个不错的办法
+% % \begin{tabular}{l|c|c}
+% % \toprule[1.5pt]
+% %  {\heiti 数据集}& {\heiti 领域}& {\heiti 图像数量}\\
+% % \midrule
+% % \multirow{3}*{{Birds-31}} & \multicolumn{1}{c|}{CUB-200-2011} & \multicolumn{1}{c}{1848}\\
+% % & NABirds & 2988 \\
+% % & iNaturalist2017 & 2857 \\
+% % \midrule
+% % \multirow{2}*{{CUB-Paintings}} & \multicolumn{1}{c|}{CUB-200-2011} & \multicolumn{1}{c}{11788}\\
+% % & CUB-200-Painting & 3047 \\
+
+
+% % \bottomrule[1.5pt]
+% % \end{tabular}
+% % \end{center}
+% % \label{table.imagenum}
+% % \vspace{-10pt}
+% % \end{table}
+
+
+
+% % \iffalse
+% % \newcolumntype{Y}{>{\centering\arraybackslash}X} 
+% % \begin{table}[htb]
+% %   \centering
+% %   \begin{minipage}[t]{0.8\linewidth} % 如果想在表格中使用脚注，minipage是个不错的办法
+% %   \caption[模板文件]{服务器配置}
+% %   \label{tab:gpu}
+% %     \begin{tabularx}{\linewidth}{lYY}
+% %      \toprule[1.5pt]
+% % 	数据集&领域&图像数量\\
+% % 	\midrule
+% % 	\multirow{2}*{{CUB-Paintings}} & \multicolumn{1}{c|}{CUB-200-2011} & \multicolumn{1}{c}{11788}\\
+% % 	& CUB-200-Painting & 3047 \\
+% % 	\midrule
+% % 	\multirow{3}*{{Birds-31}} & \multicolumn{1}{c|}{CUB-200-2011} & \multicolumn{1}{c}{1848}\\
+% % 	& NABirds & 2988 \\
+% % 	& iNaturalist2017 & 2857 \\
+% % 	\bottomrule[1.5pt]
+% %     \end{tabularx}
+% %   \end{minipage}
+% % \end{table}
+
+
+
+
+% % \newcolumntype{Y}{>{\centering\arraybackslash}X} 
+% % \begin{table}[htb]
+% %   \centering
+% %   \begin{minipage}[t]{0.8\linewidth} % 如果想在表格中使用脚注，minipage是个不错的办法
+% %   \caption[模板文件]{服务器配置}
+% %   \label{tab:gpu}
+% %     \begin{tabularx}{\linewidth}{lY}
+% %       \toprule[1.5pt]
+% %       {\heiti 项目} & {\heiti 配置信息} \\\midrule[1pt]
+% %       操作系统 & Ubuntu 18.04.3 LTS \\
+% %       中央处理器 & Intel(R) Xeon(R) Gold 6130 CPU @ 2.10GHz \\
+% %       中央处理器核数 & 64 \\
+% %       内存    & 512GB \\
+% %       图形处理器    & NVIDIA TITAN RTX \\
+% %       显存   & 24GB \\
+% %       Pytorch版本   & 0.4.1 \\
+% %       CUDA版本   & 10.2 \\
+% %       \bottomrule[1.5pt]
+% %     \end{tabularx}
+% %   \end{minipage}
+% % \end{table}

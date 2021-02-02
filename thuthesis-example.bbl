@@ -1,0 +1,158 @@
+\begin{thebibliography}{20}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{#1}
+\expandafter\ifx\csname urlstyle\endcsname\relax\else
+  \urlstyle{same}\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \DeclareUrlCommand\doi{\urlstyle{rm}}
+  \def\eprint#1#2{#2}
+\else
+  \def\doi#1{\href{https://doi.org/#1}{\nolinkurl{#1}}}
+  \let\eprint\href
+\fi
+
+\bibitem[{Zhang Ning} et~al.(2014){Zhang Ning}, Donahue, Girshick, and
+  Darrell]{zhang2014part}
+{Zhang Ning}, Donahue~J, Girshick~R, et~al.
+\newblock Part-based r-cnns for fine-grained category detection[C]//
+ECCV.
+\newblock 2014: 834-849.
+
+\bibitem[Lin et~al.(2015)Lin, RoyChowdhury, Maji, and Maji]{lin2015bilinear}
+Lin~T~Y, RoyChowdhury~A, Maji~S, et~al.
+\newblock Bilinear cnn models for fine-grained visual recognition[C]//
+CVPR.
+\newblock 2015: 1449-1457.
+
+\bibitem[{Gao Yang} et~al.(2016){Gao Yang}, Beijbom, {Zhang Ning}, and
+  Darrell]{gao2016compact}
+{Gao Yang}, Beijbom~O, {Zhang Ning}, et~al.
+\newblock Compact bilinear pooling[C]//
+CVPR.
+\newblock 2016: 317-326.
+
+\bibitem[Dubey et~al.(2018)Dubey, Gupta, Raskar, and
+  Naik]{dubey2018maximum-entropy}
+Dubey~A, Gupta~O, Raskar~R, et~al.
+\newblock Maximum-entropy fine grained classification[C]//
+NeurIPS.
+\newblock 2018: 635-645.
+
+\bibitem[Krizhevsky et~al.(2012)Krizhevsky, Sutskever, and
+  Hinton]{krizhevsky2012imagenet}
+Krizhevsky~A, Sutskever~I, Hinton~G~E.
+\newblock Imagenet classification with deep convolutional neural networks[C]//
+NeurIPS.
+\newblock 2012: 1097-1105.
+
+\bibitem[Simonyan et~al.(2015)Simonyan and Zisserman]{simonyan2014very}
+Simonyan~K, Zisserman~A.
+\newblock Very deep convolutional networks for large-scale image
+  recognition[C]//
+ICLR.
+\newblock 2015.
+
+\bibitem[Szegedy et~al.(2015)Szegedy, {Liu Wei}, {Jia Yangqing}, Sermanet,
+  Reed, Anguelov, Erhan, Vanhoucke, and Rabinovich]{szegedy2015going}
+Szegedy~C, {Liu Wei}, {Jia Yangqing}, et~al.
+\newblock Going deeper with convolutions[C]//
+CVPR.
+\newblock 2015: 1-9.
+
+\bibitem[Szegedy et~al.(2016)Szegedy, Vanhoucke, Ioffe, Shlens, and
+  Wojna]{szegedy2016rethinking}
+Szegedy~C, Vanhoucke~V, Ioffe~S, et~al.
+\newblock Rethinking the inception architecture for computer vision[C]//
+CVPR.
+\newblock 2016: 2818-2826.
+
+\bibitem[{He Kaiming} et~al.(2016){He Kaiming}, {Zhang Xiangyu}, {Ren
+  Shaoqing}, and {Sun Jian}]{he2016deep}
+{He Kaiming}, {Zhang Xiangyu}, {Ren Shaoqing}, et~al.
+\newblock Deep residual learning for image recognition[C]//
+CVPR.
+\newblock 2016: 770-778.
+
+\bibitem[Pan et~al.(2010)Pan and Yang]{pan2010survey}
+Pan~S~J, Yang~Q.
+\newblock A survey on transfer learning[J].
+\newblock IEEE Transactions on Knowledge and Data Engineering, 2010,
+  22\penalty0 (10): 1345-1359.
+
+\bibitem[Gebru et~al.(2017)Gebru, Hoffman, and {Li Feifei}]{Feifei2017fine}
+Gebru~T, Hoffman~J, {Li Feifei}.
+\newblock Fine-grained recognition in the wild: A multi-task domain adaptation
+  approach[C]//
+ICCV.
+\newblock 2017: 1358-1367.
+
+\bibitem[Tzeng et~al.(2015)Tzeng, Hoffman, Darrell, and
+  Saenko]{tzeng2015simultaneous}
+Tzeng~E, Hoffman~J, Darrell~T, et~al.
+\newblock Simultaneous deep transfer across domains and tasks[C]//
+ICCV.
+\newblock 2015: 4068-4076.
+
+\bibitem[{Xu Zhe} et~al.(2018){Xu Zhe}, {Huang Shaoli}, {Zhang Ya}, and {Tao
+  Dacheng}]{xu2018webly}
+{Xu Zhe}, {Huang Shaoli}, {Zhang Ya}, et~al.
+\newblock Webly-supervised fine-grained visual categorization via deep domain
+  adaptation[J].
+\newblock IEEE Transactions on Pattern Analysis and Machine Intelligence, 2018,
+  40\penalty0 (5): 1100-1113.
+
+\bibitem[{Cui Yin} et~al.(2018){Cui Yin}, {Song Yang}, {Sun Chen}, Howard, and
+  Belongie]{cui2018large}
+{Cui Yin}, {Song Yang}, {Sun Chen}, et~al.
+\newblock Large scale fine-grained categorization and domain-specific transfer
+  learning[C]//
+CVPR.
+\newblock 2018: 4109-4118.
+
+\bibitem[{Wang Sinan} et~al.(2020){Wang Sinan}, {Chen Xinyang}, {Wang Yunbo},
+  {Long Mingsheng}, and Wang]{wangprogressive}
+{Wang Sinan}, {Chen Xinyang}, {Wang Yunbo}, et~al.
+\newblock Progressive adversarial networks for fine-grained domain
+  adaptation[C]//
+CVPR.
+\newblock 2020.
+
+\bibitem[Bengio et~al.(2009)Bengio, Louradour, Collobert, and
+  Weston]{bengio2009curriculum}
+Bengio~Y, Louradour~J, Collobert~R, et~al.
+\newblock Curriculum learning[C]//
+ICML.
+\newblock 2009: 41-48.
+
+\bibitem[{Jia Yangqing} et~al.(2014){Jia Yangqing}, Shelhamer, Donahue,
+  Karayev, Long, Girshick, Guadarrama, and Darrell]{jia2014caffe}
+{Jia Yangqing}, Shelhamer~E, Donahue~J, et~al.
+\newblock Caffe: Convolutional architecture for fast feature embedding[C]//
+MMM.
+\newblock 2014: 675-678.
+
+\bibitem[Abadi et~al.(2016)Abadi, Barham, Chen, Chen, Davis, Dean, Devin,
+  Ghemawat, Irving, Isard, et~al.]{abadi2016tensorflow}
+Abadi~M, Barham~P, Chen~J, et~al.
+\newblock Tensorflow: A system for large-scale machine learning[C]//
+12th $\{$USENIX$\}$ Symposium on Operating Systems Design and Implementation
+  ($\{$OSDI$\}$ 16).
+\newblock 2016: 265-283.
+
+\bibitem[{Chen Tianqi} et~al.(2015){Chen Tianqi}, {Li Mu}, {Li Yutian}, {Lin
+  Min}, {Wang Naiyan}, {Wang Minjie}, {Xiao Tianjun}, {Xu Bing}, {Zhang
+  Chiyuan}, and {Zhang Zheng}]{chen2015mxnet}
+{Chen Tianqi}, {Li Mu}, {Li Yutian}, et~al.
+\newblock Mxnet: A flexible and efficient machine learning library for
+  heterogeneous distributed systems[J].
+\newblock arXiv preprint arXiv:1512.01274, 2015.
+
+\bibitem[Paszke et~al.(2019)Paszke, Gross, Massa, Lerer, Bradbury, Chanan,
+  Killeen, Lin, Gimelshein, Antiga, et~al.]{paszke2019pytorch}
+Paszke~A, Gross~S, Massa~F, et~al.
+\newblock Pytorch: An imperative style, high-performance deep learning
+  library[C]//
+NeurIPS.
+\newblock 2019: 8024-8035.
+
+\end{thebibliography}
